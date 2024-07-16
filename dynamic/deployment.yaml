@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nfs-client-provisioner
+  labels:
+    app: nfs-client-provisioner
+  # replace with namespace where provisioner is deployed
+  namespace: test
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: nfs-client-provisioner
+  template:
+    metadata:
+      labels:
+        app: nfs-client-provisioner
+    spec:
+      serviceAccountName: nfs-client-provisioner-sa
+      containers:
+        - name: nfs-client-provisioner-fast
+          image: registry.k8s.io/sig-storage/nfs-subdir-external-provisioner:v4.0.2
+          volumeMounts:
+            - name: nfs-client-root1
+              mountPath: /persistentvolumes
+          env:
+            - name: PROVISIONER_NAME
+              value: dynamic-provisioner-fast
+            - name: NFS_SERVER
+              value: 211.183.3.10
+            - name: NFS_PATH
+              value: /pv/fast
+        - name: nfs-client-provisioner-slow
+          image: registry.k8s.io/sig-storage/nfs-subdir-external-provisioner:v4.0.2
+          volumeMounts:
+            - name: nfs-client-root2
+              mountPath: /persistentvolumes
+          env:
+            - name: PROVISIONER_NAME
+              value: dynamic-provisioner-slow
+            - name: NFS_SERVER
+              value: 211.183.3.10
+            - name: NFS_PATH
+              value: /pv/slow
+      volumes:
+        - name: nfs-client-root1
+          nfs:
+            server: 211.183.3.10
+            path: /pv/fast
+        - name: nfs-client-root2
+          nfs:
+            server: 211.183.3.10
+            path: /pv/slow  

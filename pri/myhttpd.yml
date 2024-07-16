@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc-myhttpd
+spec:
+  type: LoadBalancer
+  selector:
+    app: myhttpd
+  ports:
+  - port: 80
+    targetPort: 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myhttpd-dep
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: myhttpd
+  template:
+    metadata:
+      name: myhttpd-pod
+      labels:
+        app: myhttpd
+    spec:
+      containers:
+      - name: myhttpd-con
+        image: 61.254.18.30:5000/pcm/httpd:1 

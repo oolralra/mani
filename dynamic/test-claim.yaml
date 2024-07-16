@@ -1,0 +1,12 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: test-claim-slow
+  namespace: test
+spec:
+  storageClassName: slow-storage
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Mi

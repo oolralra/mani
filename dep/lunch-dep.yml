@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: lunch
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lunch-dep
+  namespace: lunch
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: lunch-pod-label
+  template:
+    metadata:
+      labels:
+        app: lunch-pod-label
+    spec:
+      containers:
+      - name: lunch-con
+        image: nginx:1.11

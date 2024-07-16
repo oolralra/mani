@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc-mynginx
+spec:
+  selector:
+    app: mynginx
+  ports:
+  - port: 80
+    targetPort: 80
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mynginx-dep
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: mynginx
+  template:
+    metadata:
+      name: mynginx-pod
+      labels:
+        app: mynginx
+    spec:
+      containers:
+      - name: mynginx-con
+        image: public.ecr.aws/nginx/nginx:stable-perl

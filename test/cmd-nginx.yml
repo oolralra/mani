@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cmd-config
+data:
+  test.txt: |
+    test
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: cmd-nginx
+spec:
+  containers:
+  - name: cmd-nginx
+    image: nginx:latest
+    volumeMounts:
+      - name: config-volume
+        mountPath: /test
+    readinessProbe:
+      exec:
+        command: ["cat","/test/test.txt"]
+      initialDelaySeconds: 10
+      periodSeconds: 3
+  volumes:
+  - name: config-volume
+    configMap:
+      name: cmd-config
+      items:
+      - key: test.txt
+        path: test.txt
